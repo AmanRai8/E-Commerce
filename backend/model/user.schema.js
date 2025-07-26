@@ -19,23 +19,27 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: [6, "Password must be at least 6 characters long"],
     },
-    cartItem: {
-      quantity: {
-        type: Number,
-        default: 1,
+    cartItem: [
+      {
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
       },
-      product: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Product",
-      },
-      role: {
-        type: String,
-        enum: ["customer", "admin"],
-        default: "customer",
-      },
+    ],
+    role: {
+      type: String,
+      enum: ["customer", "admin"],
+      default: "customer",
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 //hashing password before saving to the database
