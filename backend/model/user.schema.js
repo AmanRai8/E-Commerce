@@ -19,7 +19,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: [6, "Password must be at least 6 characters long"],
     },
+<<<<<<< HEAD
     cartItems: [
+=======
+    cartItem: [
+>>>>>>> 8015b03c5573b656d41c39d027a5aa8b4f8bfa74
       {
         quantity: {
           type: Number,
