@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 
 const DrawingApp = () => {
   const canvasRef = useRef(null);
-  const [drawing, setDrawing] = useState(false);
+  const isDrawingRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -11,13 +11,14 @@ const DrawingApp = () => {
     canvas.height = window.innerHeight;
 
     const startDraw = (e) => {
-      setDrawing(true);
+      if (e.button !== 0) return; // Only left click
+      isDrawingRef.current = true;
       ctx.beginPath();
       ctx.moveTo(e.clientX, e.clientY);
     };
 
     const draw = (e) => {
-      if (!drawing) return;
+      if (!isDrawingRef.current) return;
       ctx.lineTo(e.clientX, e.clientY);
       ctx.strokeStyle = "black";
       ctx.lineWidth = 2;
@@ -25,20 +26,33 @@ const DrawingApp = () => {
     };
 
     const endDraw = () => {
-      setDrawing(false);
+      isDrawingRef.current = false;
       ctx.closePath();
+    };
+
+    const clearCanvas = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
+    const handleDoubleClick = (e) => {
+      if (e.button === 0) {
+        // Double left-click
+        clearCanvas();
+      }
     };
 
     canvas.addEventListener("mousedown", startDraw);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", endDraw);
+    canvas.addEventListener("dblclick", handleDoubleClick);
 
     return () => {
       canvas.removeEventListener("mousedown", startDraw);
       canvas.removeEventListener("mousemove", draw);
       canvas.removeEventListener("mouseup", endDraw);
+      canvas.removeEventListener("dblclick", handleDoubleClick);
     };
-  }, [drawing]);
+  }, []);
 
   return (
     <canvas
@@ -47,7 +61,9 @@ const DrawingApp = () => {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "cyan",
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "transparent",
         zIndex: 9997,
       }}
     />
